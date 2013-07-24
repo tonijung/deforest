@@ -7,6 +7,7 @@ merge m:m countrycode yr using "C:\Users\tjung\Dropbox\Brempong\data\forest\UN_f
 drop _merge
 reorder yr country countrycode un_f03 un_f04 un_f05
 sort yr country
+ren countrycode un_cc
 save "C:\Users\tjung\Dropbox\Brempong\data\forest\UN_Forest.dta"
 clear
 
@@ -74,4 +75,19 @@ replace bob=1 if country=="Western Sahara"
 replace bob=1 if country=="Zambia"
 replace bob=1 if country=="Zimbabwe"
 sort bob
+drop if bob==0
+drop bob
+sort country yr
+ren countrycode fao_cc
+save "C:\Users\tjung\Dropbox\Brempong\data\FAOSTAT-AfricaForest.dta"
+clear
+
+/*merge both datasets*/
+clear
+use "C:\Users\tjung\Dropbox\Brempong\data\UN_UrbanData.dta", clear
+merge m:m yr country using "C:\Users\tjung\Dropbox\Brempong\data\FAOSTAT-AfricaForest.dta"
+drop element element_code _merge un_cc fao_cc
+reorder yr country un_f03 un_f04 un_f05 country_area forest_area land_area un_cc fao_cc
+sort country yr
+save "C:\Users\tjung\Dropbox\Brempong\data\merged.dta"
 clear
