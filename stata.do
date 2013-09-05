@@ -180,6 +180,8 @@ tsset un_country_code yr
 save "C:\Users\tjung\Dropbox\Brempong\data\merged.dta", replace
 clear
 
+/*for FAOSTATA wood charoal rename Sudan (former) to Sudan.. South Sudan data only exists in Production*/
+
 /*start regressions*/
 log using "C:\Users\tjung\Dropbox\Brempong\data\July-23.smcl"
 xtreg....
