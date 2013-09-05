@@ -82,6 +82,8 @@ ren countrycode fao_cc
 save "C:\Users\tjung\Dropbox\Brempong\data\FAOSTAT-AfricaForest.dta"
 clear
 
+
+
 /*merge both datasets*/
 clear
 use "C:\Users\tjung\Dropbox\Brempong\data\UN_UrbanData.dta", clear
@@ -173,14 +175,52 @@ drop var
 save "C:\Users\tjung\Dropbox\Brempong\data\merged.dta", replace
 clear
 
+/*clean FAOSTAT wood charcoal data*/
+clear
+set more off
+use "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wc_production.dta", clear
+merge m:m country year using "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wc_importval.dta"
+drop _merge
+merge m:m country year using "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wc_importquant.dta"
+drop _merge
+merge m:m country year using "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wc_exportval.dta"
+drop _merge
+merge m:m country year using "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wc_exportquant.dta"
+drop _merge
+save "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wood_char.dta"
+ren year yr
+ren production wc_prod
+ren importvalue wc_importval
+ren importquantity wc_importquant
+ren exportvalue wc_exportval
+ren exportquant wc_exportquant
+save "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wood_char.dta", replace
+gen bob=0
+replace bob=1 if country=="Côte d'Ivoire"
+replace country="Cote d'Ivoire" if bob==1
+drop bob
+gen bob=0
+replace bob=1 if country=="Ethiopia PDR"
+replace country="Ethiopia" if bob==1
+drop bob
+gen bob=0
+replace bob=1 if country=="Sudan (former)"
+replace country="Sudan" if bob==1
+drop bob
+save "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wood_char.dta", replace
+/*add un country codes*/
+clear
+
+/*merge wood charoal data to original merged dataset*/
+
+
 /*make into time series dataset*/
+clear
 use "C:\Users\tjung\Dropbox\Brempong\data\merged.dta", clear
 sort un_country_code yr
 tsset un_country_code yr
 save "C:\Users\tjung\Dropbox\Brempong\data\merged.dta", replace
 clear
-
-/*for FAOSTATA wood charoal rename Sudan (former) to Sudan.. South Sudan data only exists in Production*/
 
 /*start regressions*/
 log using "C:\Users\tjung\Dropbox\Brempong\data\July-23.smcl"
