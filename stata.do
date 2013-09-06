@@ -212,15 +212,35 @@ save "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wood_char.dta
 clear
 
 /*merge wood charoal data to original merged dataset*/
-
-
-/*make into time series dataset*/
 clear
-use "C:\Users\tjung\Dropbox\Brempong\data\merged.dta", clear
+use C:\Users\tjung\Dropbox\Brempong\data\merged.dta 
+gen bob=0
+replace bob=1 if country=="Côte d'Ivoire"
+replace country="Cote d'Ivoire" if bob==1
+drop bob
+replace un_country_code=384 if country=="Cote d'Ivoire"
+merge m:m yr un_country_code using "C:\Users\tjung\Dropbox\Brempong\data\wood charcoal (FAOSTAT)\wood_char.dta"
+drop _merge
+merge m:m yr un_country_code using "C:\Users\tjung\Dropbox\Brempong\data\wb_database.dta"
+drop _merge
+/*check for duplicates*/
+by country yr: gen dup=cond(_N==1,0,_n)
+sort dup
+drop dup
+reorder yr country un_country_code pop_urban pop_rural pop_total country_area forest_area land_area wb_elec_consum_capita wb_elec_prod wb_pop_urban_growth wb_pop_rural_growth wb_pop_growth wb_pop_total wb_pop_rural wb_pop_urban wb_pop_density
+save "C:\Users\tjung\Dropbox\Brempong\data\mergedV3.dta", replace
+clear
+
+/*make into time series dataset & create deforest variable*/
+clear
+use "C:\Users\tjung\Dropbox\Brempong\data\mergedV3.dta", clear
 sort un_country_code yr
 tsset un_country_code yr
-save "C:\Users\tjung\Dropbox\Brempong\data\merged.dta", replace
+by un_country_code: g deforest=100*(forest_area[_n]-forest_area[_n-1])/forest_area[_n-1]
+reorder yr country un_country_code pop_urban pop_rural pop_total country_area land_area forest_area deforest
+save "C:\Users\tjung\Dropbox\Brempong\data\mergedV3.dta", replace
 clear
+
 
 /*start regressions*/
 log using "C:\Users\tjung\Dropbox\Brempong\data\July-23.smcl"
