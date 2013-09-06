@@ -236,8 +236,8 @@ clear
 use "C:\Users\tjung\Dropbox\Brempong\data\mergedV3.dta", clear
 sort un_country_code yr
 tsset un_country_code yr
-by un_country_code: g deforest=100*(forest_area[_n]-forest_area[_n-1])/forest_area[_n-1]
-reorder yr country un_country_code pop_urban pop_rural pop_total country_area land_area forest_area deforest
+by un_country_code: g forest_growth=100*(forest_area[_n]-forest_area[_n-1])/forest_area[_n-1]
+reorder yr country un_country_code pop_urban pop_rural pop_total country_area land_area forest_area forest_growth
 save "C:\Users\tjung\Dropbox\Brempong\data\mergedV3.dta", replace
 clear
 
