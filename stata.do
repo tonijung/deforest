@@ -241,6 +241,8 @@ reorder yr country un_country_code pop_urban pop_rural pop_total country_area la
 save "C:\Users\tjung\Dropbox\Brempong\data\mergedV3.dta", replace
 clear
 
+/*Use add_region.do to add region and region codes*/
+
 
 /*start regressions*/
 log using "C:\Users\tjung\Dropbox\Brempong\data\July-23.smcl"
